@@ -1,0 +1,17 @@
+date,site,status
+2023-10-21T14:16:06-03:00,https://httpstat.us/200,true
+2023-10-21T14:16:07-03:00,https://httpstat.us/500,false
+2023-10-21T14:16:07-03:00,https://httpstat.us/200,true
+2023-10-21T14:16:08-03:00,https://httpstat.us/404,false
+2023-10-21T14:16:14-03:00,https://httpstat.us/200,true
+2023-10-21T14:16:15-03:00,https://httpstat.us/500,false
+2023-10-21T14:16:15-03:00,https://httpstat.us/200,true
+2023-10-21T14:16:16-03:00,https://httpstat.us/404,false
+2023-10-21T14:16:44-03:00,https://httpstat.us/200,true
+2023-10-21T14:16:45-03:00,https://httpstat.us/500,false
+2023-10-21T14:16:46-03:00,https://httpstat.us/200,true
+2023-10-21T14:16:47-03:00,https://httpstat.us/404,false
+2023-10-21T14:16:50-03:00,https://httpstat.us/200,true
+2023-10-21T14:16:50-03:00,https://httpstat.us/500,false
+2023-10-21T14:16:51-03:00,https://httpstat.us/200,true
+2023-10-21T14:16:52-03:00,https://httpstat.us/404,false

@@ -22,13 +22,13 @@ func main() {
 		switch command {
 		case 0:
 			fmt.Println("Exiting program...")
-			break
+			os.Exit(0)
 		case 1:
 			fmt.Println("Monitoring...")
 			startMonitoring()
 		case 2:
 			fmt.Println("Showing logs...")
-			os.Exit(0)
+			readLog()
 		default:
 			fmt.Println("Unknown command")
 			os.Exit(-1)
@@ -58,7 +58,7 @@ func readCommand() int {
 }
 
 func startMonitoring() {
-	sites := readCsvFile()
+	sites := readCsvFile("sites.csv")
 
 	for _, site := range sites {
 		checkSite(site)
@@ -74,15 +74,15 @@ func checkSite(site string) {
 		fmt.Println("Site:", site, "is with problems. Status code:", response.StatusCode)
 	}
 
-	writeLog(site, response.StatusCode == 200)
+	writeLogCsv(site, response.StatusCode == 200)
 
 	time.Sleep(DELAY_IN_SECONDS * time.Second)
 }
 
-func readCsvFile() []string {
-	var sites []string
+func readCsvFile(fileName string) []string {
+	var listItens []string
 
-	file, err := os.Open("sites.csv")
+	file, err := os.Open(fileName)
 	if err != nil {
 		fmt.Println("Error:", err)
 	}
@@ -97,21 +97,50 @@ func readCsvFile() []string {
 	fmt.Println(itens)
 
 	for _, item := range itens {
-		sites = append(sites, item[0])
+		listItens = append(listItens, item[0])
 	}
 
 	file.Close()
 
-	return sites
+	return listItens
 }
 
-func writeLog(site string, status bool) {
-	file, err := os.OpenFile("log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+func writeLogCsv(site string, status bool) {
+	file, err := os.OpenFile("log.csv", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+	// write first line if file is empty
+	fileInfo, err := file.Stat()
 	if err != nil {
 		fmt.Println("Error:", err)
 	}
 
-	file.WriteString(time.Now().Format(time.RFC3339) + " - " + site + " - online: " + fmt.Sprint(status) + "\n")
+	if fileInfo.Size() == 0 {
+		file.WriteString("date,site,status\n")
+	}
+
+	file.WriteString(time.Now().Format(time.RFC3339) + "," + site + "," + fmt.Sprint(status) + "\n")
+	file.Close()
+}
+
+func readLog() {
+	file, err := os.Open("log.csv")
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+
+	reader := csv.NewReader(file)
+	itens, err := reader.ReadAll()
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+
+	for _, log := range itens {
+		fmt.Println(log)
+	}
 
 	file.Close()
+
 }
