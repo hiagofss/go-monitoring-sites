@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/csv"
 	"fmt"
 	"net/http"
 	"os"
@@ -13,6 +14,7 @@ var STOP_MENU_COMMAND bool = false
 
 func main() {
 	showInstroduction()
+
 	for {
 		showMenu()
 
@@ -56,11 +58,11 @@ func readCommand() int {
 }
 
 func startMonitoring() {
-	sites := []string{"https://httpstat.us/200", "https://httpstat.us/500", "https://httpstat.us/200", "https://httpstat.us/404"}
+	sites := readCsvFile()
+
 	for _, site := range sites {
 		checkSite(site)
 	}
-
 }
 
 func checkSite(site string) {
@@ -73,4 +75,30 @@ func checkSite(site string) {
 	}
 
 	time.Sleep(DELAY_IN_SECONDS * time.Second)
+}
+
+func readCsvFile() []string {
+	var sites []string
+
+	file, err := os.Open("sites.csv")
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+
+	reader := csv.NewReader(file)
+	itens, err := reader.ReadAll()
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+
+	itens = itens[1:]
+	fmt.Println(itens)
+
+	for _, item := range itens {
+		sites = append(sites, item[0])
+	}
+
+	file.Close()
+
+	return sites
 }
