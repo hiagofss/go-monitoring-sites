@@ -74,6 +74,8 @@ func checkSite(site string) {
 		fmt.Println("Site:", site, "is with problems. Status code:", response.StatusCode)
 	}
 
+	writeLog(site, response.StatusCode == 200)
+
 	time.Sleep(DELAY_IN_SECONDS * time.Second)
 }
 
@@ -101,4 +103,15 @@ func readCsvFile() []string {
 	file.Close()
 
 	return sites
+}
+
+func writeLog(site string, status bool) {
+	file, err := os.OpenFile("log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+
+	file.WriteString(time.Now().Format(time.RFC3339) + " - " + site + " - online: " + fmt.Sprint(status) + "\n")
+
+	file.Close()
 }
